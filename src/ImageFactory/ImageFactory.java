@@ -10,9 +10,19 @@ import java.io.InputStream;
 public abstract class ImageFactory implements ISkinsImages{
 
     protected String skin_name;
+    protected Image background ;
 
     public ImageFactory(String skin_name){
         this.skin_name = skin_name;
+        try {
+            this.background = new Image(new FileInputStream("resources/Images/background.jpg"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Image getBackground(){
+        return this.background;
     }
 
     public Image getWallImage(){

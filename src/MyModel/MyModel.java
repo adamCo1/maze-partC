@@ -295,7 +295,10 @@ public class MyModel extends Observable implements IModel {
 
     @Override
     public int[][] getMaze() {
-        return maze.getMaze();
+        if(this.maze == null)
+            return null;
+
+        return this.maze.getMaze();
     }
 
 

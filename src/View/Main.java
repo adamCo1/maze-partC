@@ -53,10 +53,6 @@ public class Main extends Application {
         SetStageCloseEvent(primaryStage);
         primaryStage.show();
 
-        //DoWork task = new DoWork();
-        //task.setViewModel(viewModel);
-        //new Thread(task).start();
-
     }
 
     private void exit(){

@@ -19,9 +19,11 @@ import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -105,6 +107,13 @@ public class MazeDisplayer extends Canvas implements IDisplayMaze {
                 } catch(Exception e){
 
                 }
+        }else{//maze is null , draw background
+            ISkinsImages factory = new ClassicSkinImages("Classic");
+            Image background = ((ClassicSkinImages) factory).getBackground();
+            GraphicsContext g = getGraphicsContext2D();
+
+            g.drawImage(background,0,0,this.getWidth(),this.getHeight());
+
         }
     }
 

@@ -55,6 +55,7 @@ public class View implements Observer, IVIew, Initializable {
         this.viewModel = viewModel;
         bindProperties(viewModel);
         Sounds.getInstance().playBackgroundMusic();
+       // this.mazeDisplayer.redraw();
     }
 
     private void updateTime(){
@@ -491,6 +492,10 @@ public class View implements Observer, IVIew, Initializable {
 
     @FXML
     private void saveGame(ActionEvent actionEvent){
+
+        if(this.viewModel.getMze() == null){
+            return;
+        }
         FXMLLoader loader = new FXMLLoader();
         Stage saveGameStage = new Stage();
         saveGameStage.initModality(Modality.APPLICATION_MODAL);
