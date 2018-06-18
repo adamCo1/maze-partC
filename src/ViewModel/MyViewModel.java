@@ -88,7 +88,6 @@ public class MyViewModel extends Observable implements Observer, IMazeViewModel 
         if(o == this.model) {
             characterRowIndex = model.getCharRowPosition();
             characterColIndex = model.getCharColPosition();
-            System.out.println(characterRowIndex + ","+characterColIndex);
             characterPositionRow.set(characterRowIndex + "");
             characterPositionColumn.set(characterColIndex + "");
             setChanged();

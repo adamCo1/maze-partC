@@ -23,9 +23,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Observable;
@@ -39,9 +39,8 @@ public class View implements Observer, IVIew, Initializable {
     private int timePassedSoFar ;
     private Thread timeThread = new Thread(() -> updateTime());
     private Solution solution;
-    private MediaPlayer btn_click_sound , background_music , game_music;
     private String skin;
-
+    private boolean cancelGeneration = false;
     @FXML
     private MyViewModel viewModel;
     public MazeDisplayer mazeDisplayer;
@@ -97,6 +96,12 @@ public class View implements Observer, IVIew, Initializable {
      */
 
     //region Handle
+
+    public void closeFromMenu(){
+        this.viewModel.shutDownServers();
+        System.exit(0);
+    }
+
     private void endGame(){
         Sounds sounds = Sounds.getInstance();
         sounds.stopAllIngameMusic();
@@ -142,44 +147,44 @@ public class View implements Observer, IVIew, Initializable {
 
             double cellWidth = this.mazeDisplayer.getCellWidth();
             double cellHeight = this.mazeDisplayer.getCellHeight();
+            double x = event.getX() , y = event.getY();
+
             try {
                 int charRow = Integer.parseInt(this.characterPositionRow.get());
                 int charCol = Integer.parseInt(this.characterPositionColumn.get());
 
-            if(event.getX() >= charCol*cellWidth-cellWidth && event.getX() <= charCol*cellWidth+cellWidth*2 &&
-                    event.getY() >= charRow*cellHeight-cellHeight && event.getY() <= charRow*cellHeight+cellHeight*2){
+            if(x >= charCol*cellWidth-cellWidth && x <= charCol*cellWidth+cellWidth*2 &&
+                    y >= charRow*cellHeight-cellHeight && y <= charRow*cellHeight+cellHeight*2){
 
-                if (event.getX() > charCol * cellWidth + cellWidth) { // move right
+                if (x > charCol * cellWidth + cellWidth) { // move right
                     if (this.viewModel.legalCharacterMove(charRow, charCol + 1)) {
                         this.viewModel.setCharacterRowIndex(charRow);
                         this.viewModel.setCharacterColIndex(charCol+1);
                     }
                 }
 
-                if (event.getX() < charCol * cellWidth) {//left
+                else if (x < charCol * cellWidth) {//left
                     if (this.viewModel.legalCharacterMove(charRow, charCol - 1)) {
                         this.viewModel.setCharacterRowIndex(charRow);
                         this.viewModel.setCharacterColIndex(charCol-1);
                     }
                 }
-                if (event.getY() < charRow * cellHeight){
+                else if (y < charRow * cellHeight){
                     if (this.viewModel.legalCharacterMove(charRow - 1, charCol)){
                         this.viewModel.setCharacterRowIndex(charRow-1);
                         this.viewModel.setCharacterColIndex(charCol);
                     }
                 }
-                if(event.getY() > charRow*cellHeight+cellHeight){
+                else if(y > charRow*cellHeight+cellHeight){
                     if(this.viewModel.legalCharacterMove(charRow+1,charCol)) {
                         this.viewModel.setCharacterRowIndex(charRow+1);
                         this.viewModel.setCharacterColIndex(charCol);
                     }
                 }
-
-                this.mazeDisplayer.redraw();
             }
 
         }catch (Exception e) {
-
+                System.out.println("error with mouse movement");
             }
         }
         event.consume();
@@ -195,6 +200,11 @@ public class View implements Observer, IVIew, Initializable {
             int cols = Integer.valueOf(this.txtfld_columnsNum.getText());
             this.btn_generateMaze.setDisable(true);//choose the skins
             handleChooseSkins();
+            if(this.cancelGeneration) {
+                this.cancelGeneration = false;
+                this.btn_generateMaze.setDisable(false);
+                return;
+            }
             sound.getInstance().stopBackgroundMusic();
             sound.getInstance().stopAllIngameMusic();
             if(this.skin.equals("Gothic")){
@@ -265,6 +275,7 @@ public class View implements Observer, IVIew, Initializable {
             AnchorPane pane = new AnchorPane();
             Scene skinscene = new Scene(pane, 800, 500);
             skinscene.getStylesheets().add(getClass().getResource("View.css").toExternalForm());
+            Sounds sound = Sounds.getInstance();
 
             Button btn_classic = new Button("Classic");
             Button btn_gothic = new Button("Gothic");
@@ -289,6 +300,7 @@ public class View implements Observer, IVIew, Initializable {
             btn_classic.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    sound.playClickMusic();
                     setSkin("Classic");
                     skinsStage.close();
                 }
@@ -297,6 +309,7 @@ public class View implements Observer, IVIew, Initializable {
             btn_gothic.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    sound.playClickMusic();
                     setSkin("Gothic");
                     skinsStage.close();
                 }
@@ -305,8 +318,17 @@ public class View implements Observer, IVIew, Initializable {
             btn_Nostalgic.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
+                    sound.playClickMusic();
                     setSkin("Nostalgic");
                     skinsStage.close();
+                }
+            });
+
+            skinsStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    sound.getInstance().playClickMusic();
+                    cancelGeneration = true;
                 }
             });
 

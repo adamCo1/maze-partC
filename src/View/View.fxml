@@ -68,9 +68,8 @@
                         <Menu mnemonicParsing="false" text="File">
                             <items>
                                 <MenuItem fx:id="menu_item_save" mnemonicParsing="false" onAction="#saveGame" onMenuValidation="#saveGame" text="Save" />
-                                <MenuItem mnemonicParsing="false" text="Close" />
+                                <MenuItem mnemonicParsing="false" onAction="#closeFromMenu" text="Close" />
                                 <MenuItem mnemonicParsing="false" onAction="#loadGame" text="Load" />
-                                <MenuItem mnemonicParsing="false" text="Unspecified Action" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
@@ -89,7 +88,7 @@
         </VBox>
     </top>
     <center>
-        <Pane prefHeight="1200.0" prefWidth="1200" BorderPane.alignment="CENTER" fx:id="GamePane">
+        <Pane fx:id="GamePane" prefHeight="1200.0" prefWidth="1200" BorderPane.alignment="CENTER">
             <children>
                 <MazeDisplayer fx:id="mazeDisplayer" height="920.0" imageFileNameCharacter="resources/Images/character1.jpg" imageFileNameEndImage="resources/Images/wall1.jpg" imageFileNameSolutionImage="resources/Images/solutionPath.png" imageFileNameWall="resources/Images/wall3.jpg" imagePathWay="resources/Images/brick.png" onMouseDragged="#handleMouseDragEnter" onScroll="#handleZoomOnMaze" width="920" />
             <Separator layoutX="-3.0" maxHeight="-Infinity" maxWidth="-Infinity" orientation="VERTICAL" prefHeight="1000.0" />

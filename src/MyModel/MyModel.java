@@ -222,7 +222,7 @@ public class MyModel extends Observable implements IModel {
     @Override
     public void setCharColPos(int col) {
         this.charColPos = col;
-        update();
+        //update();
     }
 
     @Override
